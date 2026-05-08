@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "chaschin_vladimir_linear_image_filtration_seq/common/include/common.hpp"
-#include "chaschin_vladimir_linear_image_filtration_seq/stt/include/ops_stt.hpp"
+#include "chaschin_vladimir_linear_image_filtration_seq/stt/include/ops_stl.hpp"
 
 namespace chaschin_v_linear_image_filtration_stt {
 
