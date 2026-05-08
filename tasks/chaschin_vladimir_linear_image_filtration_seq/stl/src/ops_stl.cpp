@@ -1,10 +1,9 @@
-#include "chaschin_vladimir_linear_image_filtration_seq/stt/include/ops_stt.hpp"
-
 #include <execution>
 #include <utility>
 #include <vector>
 
 #include "chaschin_vladimir_linear_image_filtration_seq/common/include/common.hpp"
+#include "chaschin_vladimir_linear_image_filtration_seq/stt/include/ops_stt.hpp"
 
 namespace chaschin_v_linear_image_filtration_stt {
 
