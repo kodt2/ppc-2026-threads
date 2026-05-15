@@ -6,7 +6,7 @@
 
 #include "chaschin_vladimir_linear_image_filtration_seq/common/include/common.hpp"
 
-namespace chaschin_v_linear_image_filtration_stt {
+namespace chaschin_v_linear_image_filtration_stl {
 
 ChaschinVLinearFiltrationSTL::ChaschinVLinearFiltrationSTL(const chaschin_v_linear_image_filtration_seq::InType &in) {
   SetTypeOfTask(GetStaticTypeOfTask());
@@ -86,4 +86,4 @@ bool ChaschinVLinearFiltrationSTL::PostProcessingImpl() {
   return true;
 }
 
-}  // namespace chaschin_v_linear_image_filtration_stt
+}  // namespace chaschin_v_linear_image_filtration_stl
