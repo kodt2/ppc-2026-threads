@@ -1,4 +1,4 @@
-#include "chaschin_vladimir_linear_image_filtration_seq\stl\include/ops_stl.hpp"
+#include "chaschin_vladimir_linear_image_filtration_seq/stl/include/ops_stl.hpp"
 
 #include <algorithm>
 #include <future>
