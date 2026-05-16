@@ -2,7 +2,9 @@
 
 #include <omp.h>
 
-#include <thread>
+#include <algorithm>
+#include <execution>
+#include <numeric>
 #include <utility>
 #include <vector>
 
@@ -55,61 +57,23 @@ bool ChaschinVLinearFiltrationALL::RunImpl() {
 
   auto &out = GetOutput();
   out.resize(static_cast<std::vector<float>::size_type>(n) * static_cast<std::vector<float>::size_type>(m));
+  std::vector<float> temp(static_cast<std::vector<float>::size_type>(n) * static_cast<std::vector<float>::size_type>(m));
 
-  std::vector<float> temp(static_cast<std::vector<float>::size_type>(n) *
-                          static_cast<std::vector<float>::size_type>(m));
+  std::vector<int> indices_x(n);
+  std::iota(indices_x.begin(), indices_x.end(), 0);
 
-  unsigned int num_threads = std::thread::hardware_concurrency();
-  if (num_threads == 0) {
-    num_threads = 4;
-  }
-  if (num_threads > static_cast<unsigned int>(m)) {
-    num_threads = m;
-  }
-
-  auto worker_horizontal = [&](int start_y, int end_y) {
-    for (int yi = start_y; yi < end_y; ++yi) {
-#pragma omp simd
-      for (int xf = 0; xf < n; ++xf) {
-        temp[(yi * n) + xf] = HorizontalFilterAtALL(image, n, xf, yi);
-      }
-    }
-  };
-
-  std::vector<std::thread> threads;
-  threads.reserve(num_threads);
-  int chunk = m / num_threads;
-  int remainder = m % num_threads;
-  int current_y = 0;
-
-  for (unsigned int i = 0; i < num_threads; ++i) {
-    int end_y = current_y + chunk + (static_cast<int>(i) < remainder ? 1 : 0);
-    threads.emplace_back(worker_horizontal, current_y, end_y);
-    current_y = end_y;
-  }
-  for (auto &t : threads) {
-    t.join();
+#pragma omp parallel for
+  for (int yi = 0; yi < m; ++yi) {
+    std::for_each(std::execution::unseq, indices_x.begin(), indices_x.end(), [&](int xf) {
+      temp[(yi * n) + xf] = HorizontalFilterAtALL(image, n, xf, yi);
+    });
   }
 
-  auto worker_vertical = [&](int start_y, int end_y) {
-    for (int yi = start_y; yi < end_y; ++yi) {
-#pragma omp simd
-      for (int xy = 0; xy < n; ++xy) {
-        out[(yi * n) + xy] = VerticalFilterAtALL(temp, n, m, xy, yi);
-      }
-    }
-  };
-
-  threads.clear();
-  current_y = 0;
-
-  for (unsigned int i = 0; i < num_threads; ++i) {
-    int end_y = current_y + chunk + (static_cast<int>(i) < remainder ? 1 : 0);
-    threads.emplace_back(worker_vertical, current_y, end_y);
-    current_y = end_y;
-  }
-  for (auto &t : threads) {
-    t.join();
+#pragma omp parallel for
+  for (int yi = 0; yi < m; ++yi) {
+    std::for_each(std::execution::unseq, indices_x.begin(), indices_x.end(), [&](int xy) {
+      out[(yi * n) + xy] = VerticalFilterAtALL(temp, n, m, xy, yi);
+    });
   }
 
   return true;
@@ -119,4 +83,4 @@ bool ChaschinVLinearFiltrationALL::PostProcessingImpl() {
   return true;
 }
 
-}  // namespace chaschin_v_linear_image_filtration_all
+}
