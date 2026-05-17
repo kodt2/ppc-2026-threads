@@ -117,4 +117,4 @@ bool ChaschinVLinearFiltrationSTL::PostProcessingImpl() {
   return true;
 }
 
-}
+}  // namespace chaschin_v_linear_image_filtration_stl
